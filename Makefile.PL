@@ -5,10 +5,11 @@ WriteMakefile(
     AUTHOR              => 'Kang-min Liu (gugod@gugod.org)',
     ABSTRACT            => 'Retrieve infromation from SourceForge site',
     NAME                => 'WWW::SourceForge',
-    VERSION             => '0.08',
+    VERSION             => '0.081',
     DISTNAME            => 'WWW-SourceForge',
     PREREQ_PM           => {
-        'WWW::Mechanize'   => '0',
+        'WWW::Mechanize'     => '0',
+	'HTML::TableExtract' => '0',
     },
     dist                => {
         COMPRESS        => 'gzip -9',
