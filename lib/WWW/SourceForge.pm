@@ -3,7 +3,7 @@ package WWW::SourceForge;
 
 use vars qw/$VERSION/;
 use WWW::Mechanize;
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use constant {
     HOMEPAGE => 'http://sourceforge.net/' ,

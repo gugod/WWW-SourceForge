@@ -1,6 +1,8 @@
+lib/WWW/SourceForge/User.pm
 lib/WWW/SourceForge/Project.pm
 lib/WWW/SourceForge.pm
 t/0.use.t
+ChangeLog
 Makefile.PL
 MANIFEST
 README
