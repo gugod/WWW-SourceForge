@@ -3,15 +3,16 @@ package WWW::SourceForge::Project;
 
 use WWW::Mechanize;
 
+use vars qw($VERSION);
+$VERSION = '0.02';
+
 sub new {
     my ($class,$pname) = @_;
-
-    my $url = "http://sourceforge.net/projects/$pname";
+    my $url = _projurl($pname);
     my $proj;
-    my $a  = WWW::Mechanize->new( autochcheck => 1);
-    $a->agent_alias("Mac Mozilla");
-    $a->get($url);
-    my $content = $a->content;
+    my $wa  = WWW::Mechanize->new( autochcheck => 1);
+    $wa->get($url);
+    my $content = $wa->content;
     # Project description
     my ($foo,$meta) = $content =~ m{<HR SIZE="1" NoShade><BR>
 <TABLE WIDTH="100%" BORDER="0">
@@ -19,8 +20,9 @@ sub new {
 <p>(.+?)<p>(?:.+?)<UL>(.+?)</UL>}s;
     $foo =~ s/^\s+//s;
     $foo =~ s/\s+$//s;
-    $proj = {name => $pname, description => $foo};
+    $proj = {unixname => $pname, description => $foo};
 
+    @$proj{name} = $content =~ m{<TITLE>SourceForge.net: Project Info - (.+)</TITLE>};
     foreach (split(/<LI> /,$meta)) {
         s/\s*<BR>//;
         my ($k,$v) = split /: /;
@@ -32,7 +34,6 @@ sub new {
         } else {
             $proj->{$k} = $v;
         }
-
     }
 
     @$proj{'Homepage'} = $content =~ m{<!-- end sub section title--><A href="(.+?)">&nbsp;Project Home Page</A>}s;
@@ -56,6 +57,11 @@ sub Latestnews {}
 
 sub MakeDonation {}
 
+# privates
+
+sub _projurl {
+    return "http://sourceforge.net/projects/" . $_[0];
+}
 
 
 

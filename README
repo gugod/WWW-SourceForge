@@ -1,0 +1,26 @@
+###  README --- /Users/gugod/elixus/svn/member/gugod/agent/souceforge/
+
+## Copyright 2004 by Kang-min Liu <gugod@gugod.org>.
+##
+## This program is free software; you can redistribute it and/or
+## modify it under the same terms as Perl itself.
+##
+## See <http://www.perl.com/perl/misc/Artistic.html>
+##
+## Author: gugod@gugod.org
+## Keywords: www,agent,sourceforge
+
+This package helps to retrieve SourceForge site information
+in a perl script.
+
+So far, can only get very basic information. The goal is to be able
+to fetch Tracker and Mailing list data. Please send any suggestions
+directly to me.
+
+Use at your own risk, the author is not responsible to any damage
+caused by using this package.
+
+Cheers,
+Kang-min Liu
+
+

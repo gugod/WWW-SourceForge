@@ -2,8 +2,57 @@
 package WWW::SourceForge;
 
 use vars qw/$VERSION/;
+use WWW::Mechanize;
+$VERSION = '0.02';
 
-$VERSION = '0.01';
+use constant {
+    HOMEPAGE => 'http://sourceforge.net/' ,
+};
+
+sub new {
+    my $class = shift;
+    my $self = { wa => undef };
+    return bless $self, $class;
+}
+
+sub most_active {
+    my $wa = $self->{wa} || WWW::Mechanize->new(autocheck => 1);
+    my $r = $wa->get(HOMEPAGE);
+    my @top10;
+    my $content = $wa->content;
+    while ($content=~ m{<b>(\d+)</b> <A HREF="/projects/(\w+?)/">(.+?)</A><BR>\n}gs) {
+        push @top10 , { unixname => $2 , name => $3 };
+    }
+    return wantarray? @top10 : \@top10;
+}
+
+sub active_list {
+    my ($self,$topn) = @_;
+    $topn ||= 50;
+    my $wa = $self->{wa} || WWW::Mechanize->new(autocheck => 1);
+    $wa->get(HOMEPAGE);
+    my @content;
+    my @top;
+    $wa->follow_link( text_regex => qr/More Activity/i);
+    push @content, $wa->content;
+    my $n = 50;
+
+    while (my $link = $wa->find_link(text_regex => qr/More --/i)) {
+        last if $n >= $topn;
+        $wa->follow_link( url => $link->url);
+        push @content, $wa->content;
+        $n += 50;
+    }
+
+    for my $c (@content) {
+        while ($c =~ m{<TD>&nbsp;&nbsp;(\d+?)</TD><TD><A href="/projects/(\w+?)/">(.+?)</A></TD><TD align="right">(.+?)</TD></TR><TR BGCOLOR="#.+?">}sg) {
+            push @top, { unixname => $2 , name => $3 , percentile => $4 };
+        }
+    }
+    @top = sort { $b->{percentile} <=> $a->{percentile} }@top;
+    return wantarray? @top : \@top;
+}
+
 
 1;
 

@@ -1,6 +1,7 @@
 lib/WWW/SourceForge/Project.pm
 lib/WWW/SourceForge.pm
+t/0.use.t
 Makefile.PL
-project.pl
 MANIFEST
+README
 META.yml                                 Module meta-data (added by MakeMaker)
