@@ -11,3 +11,4 @@ t/0.use.t
 t/1.developer.t
 t/2.fetch.t
 t/3.developer.t
+t/4.noprj.t

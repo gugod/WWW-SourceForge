@@ -7,6 +7,8 @@ use WWW::SourceForge::Project;
 
 my $sfp = WWW::SourceForge::Project->new('chewingosx');
 
+die "Invalid Project\n" unless $sfp;
+
 my $members = $sfp->Member;
 
 use YAML;

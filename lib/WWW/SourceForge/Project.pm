@@ -6,7 +6,7 @@ use WWW::Mechanize;
 use HTML::TableExtract;
 
 use vars qw($VERSION);
-$VERSION = '0.08';
+$VERSION = '0.09';
 
 =head1 NAME
 
@@ -21,6 +21,8 @@ use Data::Dumper;
 my $pname = 'gaim';
 
 my $proj = WWW::SourceForge::Project->new($pname);
+
+die "Invalid project\n" unless $proj;
 
 print Dumper $proj->Member;
 
@@ -45,6 +47,12 @@ sub new {
     my $wa  = WWW::Mechanize->new( autocheck => 1);
     $wa->get($url);
     my $content = $wa->content;
+
+    # Wrong project unixname ?
+    if($content =~ m{<H2><font color="#FF3333">Invalid Project</font></H2>}i) {
+        return;
+    }
+
     # Project description
     my ($foo,$meta) = $content =~ m{<HR SIZE="1" NoShade><BR>
 <TABLE WIDTH="100%" BORDER="0">
