@@ -3,9 +3,9 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     AUTHOR              => 'Kang-min Liu (gugod@gugod.org)',
-    ABSTRACT            => 'Retrive infromation from SourceForge site',
+    ABSTRACT            => 'Retrieve infromation from SourceForge site',
     NAME                => 'WWW::SourceForge',
-    VERSION_FROM        => 'lib/WWW/SourceForge.pm',
+    VERSION		=> '0.06',
     DISTNAME            => 'WWW-SourceForge',
     PREREQ_PM           => {
         'WWW::Mechanize'   => '0',

@@ -5,15 +5,52 @@ use vars qw/$VERSION/;
 use WWW::Mechanize;
 $VERSION = '0.05';
 
+=head1 NAME
+
+WWW::SourceForge - Retrive infromation from SourceForge site.
+
+=head1 SYNOPSIS
+
+use WWW::SourceForge::Project;
+use Data::Dumper;
+
+my $proj = WWW::SourceForge::Project->new('gaim');
+
+my @top10 = $proj->most_active;
+my @top100 = $proj->active_list(100);
+
+=head1 DESCRIPTION
+
+This module help you to retrive Project information from sourceforge
+site.
+
+So far the module itself is useless, all function is in
+L<WWW::SourceForge::Project>.
+
+=cut
+
 use constant {
     HOMEPAGE => 'http://sourceforge.net/' ,
 };
+
+=head2 new()
+
+Return an WWW::SourceForge project.
+
+=cut
 
 sub new {
     my $class = shift;
     my $self = { wa => undef };
     return bless $self, $class;
 }
+
+
+=head2 most_active($self)
+
+This method retrive top 10 project in the active list.
+
+=cut
 
 sub most_active {
     my $wa = $self->{wa} || WWW::Mechanize->new(autocheck => 1);
@@ -25,6 +62,12 @@ sub most_active {
     }
     return wantarray? @top10 : \@top10;
 }
+
+=head2 active_list($self,$n)
+
+This method retrive top-n projects in the most active list.
+
+=cut
 
 sub active_list {
     my ($self,$topn) = @_;
@@ -58,27 +101,6 @@ sub active_list {
 
 __END__
 
-=head1 NAME
-
-WWW::SourceForge - Retrive infromation from SourceForge site.
-
-=head1 SYNOPSIS
-
-use WWW::SourceForge::Project;
-use Data::Dumper;
-
-my $proj = WWW::SourceForge::Project->new('gaim');
-
-print Dump $proj;
-
-
-=head1 DESCRIPTION
-
-This module help you to retrive Project information from sourceforge
-site.
-
-So far the module itself is useless, all function is in
-L<WWW::SourceForge::Project>.
 
 =head1 COPYRIGHT
 

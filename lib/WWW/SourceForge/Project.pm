@@ -6,6 +6,36 @@ use WWW::Mechanize;
 use vars qw($VERSION);
 $VERSION = '0.05';
 
+=head1 NAME
+
+WWW::Source::Project - A class presenting sourceforge projects.
+
+=head1 SYNOPSIS
+
+use strict;
+use WWW::SourceForge::Project;
+use Data::Dumper;
+
+my $pname = 'gaim';
+
+my $proj = WWW::SourceForge::Project->new($pname);
+
+print Dumper $proj->Member;
+
+=head1 DESCRIPTION
+
+This object use L<WWW::Mechanize> to grab any informations of a project
+from sourceforge website.
+
+=head1 METHODS
+
+
+=head2 new($unixname)
+
+Return an object of project with given unixname.
+
+=cut
+
 sub new {
     my ($class,$pname) = @_;
     my $url = _projurl($pname);
@@ -64,11 +94,25 @@ sub new {
 
 # More site function here.
 
+=head2 Admin
+
+Return a list, or arrayref, of member objects who are project administrators.
+
+=cut
+
 sub Admin {
     my $self = shift;
     my $admin = $self->{Admin};
     return wantarray? @$admin : $admin ;
 }
+
+=head2 Member($param)
+
+Return a hashref of all project members. Organized as
+
+$pm->{<Position>}->{<field>}
+
+=cut
 
 sub Member {
     my($self,$param) = @_;

@@ -1,5 +1,6 @@
 2004-02-24  Liu Kang-min  <gugod@ib.gugod.org>
 
+	* 0.6: YAPC::Taipei::2004! Add POD.
 	* 0.5, Project 0.05: Fetch project members
 	* 0.4, Project 0.04: Fetch Project Admin unixnames.
 	* Project 0.03: Fetch Tracker numbers.
