@@ -6,7 +6,7 @@ use WWW::Mechanize;
 use HTML::TableExtract;
 
 use vars qw($VERSION);
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 =head1 NAME
 
@@ -123,6 +123,7 @@ sub Member {
     return $members if(keys %$members);
 
     $wa->get($self->{links}->{home});
+    sleep(1);
     $wa->follow_link(url=>$self->{links}->{developers});
     my $content = $wa->content;
 

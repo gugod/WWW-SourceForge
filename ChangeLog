@@ -1,11 +1,14 @@
+2004-10-29  Liu Kang-min  <gugod@gugod.org>
+	* 0.082: sleep(1) between consecutive GET
+
 2004-05-30  Liu Kang-min  <gugod@gugod.org>
-	* 0.7: Add a subroutine too fetch nightly cvs tarball
+	* 0.07: Add a subroutine too fetch nightly cvs tarball
 
 2004-02-24  Liu Kang-min  <gugod@ib.gugod.org>
 
-	* 0.6: YAPC::Taipei::2004! Add POD.
-	* 0.5, Project 0.05: Fetch project members
-	* 0.4, Project 0.04: Fetch Project Admin unixnames.
+	* 0.06: YAPC::Taipei::2004! Add POD.
+	* 0.05, Project 0.05: Fetch project members
+	* 0.04, Project 0.04: Fetch Project Admin unixnames.
 	* Project 0.03: Fetch Tracker numbers.
 	* 0.03: Be able to fetch user information.
 	* 0.02: Be able to fetch active list project names.
