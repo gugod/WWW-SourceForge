@@ -1,5 +1,7 @@
 2004-02-24  Liu Kang-min  <gugod@ib.gugod.org>
 
+	* 0.4, Project 0.04: Fetch Project Admin unixnames.
+	* Project 0.03: Fetch Tracker numbers.
 	* 0.03: Be able to fetch user information.
 	* 0.02: Be able to fetch active list project names.
 	* 0.01: Be able to fetch basic project information.
