@@ -1,10 +1,11 @@
 
 package WWW::SourceForge::Project;
 
+use Cwd;
 use WWW::Mechanize;
 
 use vars qw($VERSION);
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 =head1 NAME
 
@@ -167,6 +168,22 @@ sub Latestnews {}
 # yawp!
 
 sub MakeDonation {}
+
+
+=head2 FetchCVSRepository( )
+
+Fetch and save the cvs repository tarball into current working
+directory.
+
+=cut
+
+sub FetchCVSRepository {
+    my $self = shift;
+    my $project = $self->{unixname};
+    my $url = "http://cvs.sourceforge.net/cvstarballs/${project}-cvsroot.tar.bz2";
+    my $wa  = WWW::Mechanize->new( autocheck => 1);
+    $wa->get($url, ":content_file" => "${project}-cvsroot.tar.bz2" );
+}
 
 # privates
 

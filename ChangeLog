@@ -1,3 +1,6 @@
+2004-05-30  Liu Kang-min  <gugod@gugod.org>
+	* 0.7: Add a subroutine too fetch nightly cvs tarball
+
 2004-02-24  Liu Kang-min  <gugod@ib.gugod.org>
 
 	* 0.6: YAPC::Taipei::2004! Add POD.

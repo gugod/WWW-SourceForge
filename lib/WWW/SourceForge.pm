@@ -82,13 +82,14 @@ sub active_list {
 
     while (my $link = $wa->find_link(text_regex => qr/More --/i)) {
         last if $n >= $topn;
+        sleep(3);
         $wa->follow_link( url => $link->url);
         push @content, $wa->content;
         $n += 50;
     }
 
     for my $c (@content) {
-        while ($c =~ m{<TD>&nbsp;&nbsp;(\d+?)</TD><TD><A href="/projects/(\w+?)/">(.+?)</A></TD><TD align="right">(.+?)</TD></TR><TR BGCOLOR="#.+?">}sg) {
+        while ($c =~ m{<TD>&nbsp;&nbsp;(\d+?)</TD><TD><A href="/projects/(\w+?)/">(.+?)</A>.*?</TD><TD align="right">(.+?)</TD></TR><TR BGCOLOR="#FFFFFF">}sgi) {
             push @top, { unixname => $2 , name => $3 , percentile => $4 };
         }
     }
