@@ -1,0 +1,74 @@
+#!/usr/local/bin/perl -l -w
+
+=head2 SYNOPSIS
+
+  sfnet --list-member ossmole
+
+=cut
+
+use strict;
+use warnings;
+use WWW::SourceForge::Project;
+use WWW::SourceForge;
+use Getopt::Auto;
+
+*VERSION = *WWW::SourceForge::VERSION;
+
+=head2 list_active - List top active projects
+
+This will list top active projects.
+
+=cut
+
+sub list_active {
+    my $sfn = WWW::SourceForge->new;
+    my @top = $sfn->active_list(shift);
+    for(@top) {
+        my $sfp = WWW::SourceForge::Project->new($_->{unixname});
+	sleep(1);
+	my $members = $sfp->Member;
+	my $nmembers = 0;
+	for(values %$members) {$nmembers += scalar(@$_);}
+	print "$_->{unixname} ($nmembers)";
+    }
+}
+
+=head2 list_top - retrieve list of top projects
+
+This will list current top projects listed on sf.net homepage,
+alone with their number of members. It'll sleep(1)
+for each projects to prevent to be banned by SF.net.
+
+=cut
+
+sub list_top {
+    my $sfn = WWW::SourceForge->new;
+    my @top10 = $sfn->most_active;
+    for(@top10) {
+        my $sfp = WWW::SourceForge::Project->new($_->{unixname});
+	sleep(1);
+	my $members = $sfp->Member;
+	my $nmembers = 0;
+	for(values %$members) {$nmembers += scalar(@$_);}
+	print "$_->{unixname} ($nmembers)";
+    }
+}
+
+=head2 list_member - retrieve member of a given project
+
+Give a SF.net project unixname, this option gives you a list of it's
+members. For example:
+
+  sfnet --list-member ossmole
+
+=cut
+
+sub list_member {
+    my $prjname = shift;
+    my $sfp = WWW::SourceForge::Project->new($prjname);
+    my $members = $sfp->Member;
+    for(values %$members) {
+        print "$_->{loginName}" for(@$_) ;
+    }
+}
+

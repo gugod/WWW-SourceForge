@@ -3,11 +3,11 @@ package WWW::SourceForge;
 
 use vars qw/$VERSION/;
 use WWW::Mechanize;
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 =head1 NAME
 
-WWW::SourceForge - Retrive infromation from SourceForge site.
+WWW::SourceForge - Retrieve infromation from SourceForge site.
 
 =head1 SYNOPSIS
 
@@ -57,7 +57,7 @@ sub most_active {
     my $r = $wa->get(HOMEPAGE);
     my @top10;
     my $content = $wa->content;
-    while ($content=~ m{<b>(\d+)</b> <A HREF="/projects/(\w+?)/">(.+?)</A><BR>\n}gs) {
+    while ($content=~ m{<b>(\d+)</b> <A HREF="/projects/(\w+?)/">(.+?)</A><BR>\n}igs) {
         push @top10 , { unixname => $2 , name => $3 };
     }
     return wantarray? @top10 : \@top10;
@@ -72,31 +72,39 @@ This method retrive top-n projects in the most active list.
 sub active_list {
     my ($self,$topn) = @_;
     $topn ||= 50;
+    my @top;
+
     my $wa = $self->{wa} || WWW::Mechanize->new(autocheck => 1);
     $wa->get(HOMEPAGE);
-    my @content;
-    my @top;
     $wa->follow_link( text_regex => qr/More Activity/i);
-    push @content, $wa->content;
-    my $n = 50;
+    push @top, $self->parse_list_table($wa->content);
 
-    while (my $link = $wa->find_link(text_regex => qr/More --/i)) {
+    my $n = 50;
+    while (my $link = $wa->find_link(text_regex => qr/-->/i)) {
         last if $n >= $topn;
-        sleep(3);
+        sleep(1);
         $wa->follow_link( url => $link->url);
-        push @content, $wa->content;
+	push @top,$self->parse_list_table($wa->content);
         $n += 50;
     }
 
-    for my $c (@content) {
-        while ($c =~ m{<TD>&nbsp;&nbsp;(\d+?)</TD><TD><A href="/projects/(\w+?)/">(.+?)</A>.*?</TD><TD align="right">(.+?)</TD></TR><TR BGCOLOR="#FFFFFF">}sgi) {
-            push @top, { unixname => $2 , name => $3 , percentile => $4 };
-        }
-    }
     @top = sort { $b->{percentile} <=> $a->{percentile} }@top;
     return wantarray? @top : \@top;
 }
 
+
+sub parse_list_table {
+    my ($self,$c) = @_;
+    my @top;
+    while ($c =~ m{(<TR.*?>(.*?)</TR>)}g) {
+	my $line = $2;
+	if($line =~ m{href="/projects/(.+?)/">(.+?)</a>.*?</TD><TD.*?>(.+?)</TD>}) {
+	    push @top, { unixname => $1 , name => $2 , percentile => $3 };
+	    print STDERR "[[$1 , $2 , $3]]\n";
+	}
+    }
+    return @top;
+}
 
 1;
 

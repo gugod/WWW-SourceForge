@@ -1,10 +1,13 @@
-lib/WWW/SourceForge/User.pm
-lib/WWW/SourceForge/Project.pm
-lib/WWW/SourceForge.pm
-t/0.use.t
-t/1.developer.t
+bin/sfnet
 ChangeLog
+lib/WWW/SourceForge.pm
+lib/WWW/SourceForge/Project.pm
+lib/WWW/SourceForge/User.pm
 Makefile.PL
 MANIFEST
+META.yml			Module meta-data (added by MakeMaker)
 README
-META.yml                                 Module meta-data (added by MakeMaker)
+t/0.use.t
+t/1.developer.t
+t/2.fetch.t
+t/3.developer.t

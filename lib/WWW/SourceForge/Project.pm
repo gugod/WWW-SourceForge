@@ -3,9 +3,10 @@ package WWW::SourceForge::Project;
 
 use Cwd;
 use WWW::Mechanize;
+use HTML::TableExtract;
 
 use vars qw($VERSION);
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 =head1 NAME
 
@@ -85,8 +86,7 @@ sub new {
     # Find important links
     my %links;
     $links{home} = $wa->uri;
-    $links{developers} = ($wa->find_link(text_regex => qr/View Members/))->url;
-
+    $links{developers} = ($wa->find_link(url_regex => qr/memberlist\.php/))->url;
     $proj->{links} = \%links;
     $proj->{_wa}   = $wa;
     $proj->{members} = {};
@@ -118,30 +118,30 @@ $pm->{<Position>}->{<field>}
 sub Member {
     my($self,$param) = @_;
     my $wa   = WWW::Mechanize->new;
-    $wa->get($self->{links}->{home});
-    $wa->follow_link(url=>$self->{links}->{developers});
-    my $content = $wa->content;
-
     my $members = $self->{members};
     $members = $self->{members} = {} if ($param->{refresh});
     return $members if(keys %$members);
 
-    while ($content =~ m{<tr>\s+<td>(.+?)</td>\s+<td.+?><a href="/users/(\w+?)/">\w+?</a>.*?</td>\s+<td.+?>(.*?)</td>\s+<td.+?><A href=".+?">(.+?)</td>\s+<td.+?>\s+</tr>}g) {
-        my ($realName,$loginname,$position,$email) = ($1,$2,$3,$4);
-        $email =~ s/\s+at\s+/@/;
-        $position =~ s/\s*\(.+\)\s*//; # strip inline comments.
-        $position =~ s/^\s+//;
-        $position ||= 'No specific role';
-        if ($realName =~ m{<A.+?>(.+?)</A}) {
-            $realName =$1;
+    $wa->get($self->{links}->{home});
+    $wa->follow_link(url=>$self->{links}->{developers});
+    my $content = $wa->content;
+
+    my $te = HTML::TableExtract->new( headers => ['Developer','Username','Role/Position','Email','Skills'] );
+    $te->parse($content);
+
+    for my $ts ($te->table_states) {
+        for my $row ($ts->rows) {
+            my ($realName,$loginname,$position,$email,$skills) = @$row[0..4];
+            $position = 'No specific role' if($position =~ /^\s*$/);
+            push @{$members->{$position}||=[]} ,
+                {
+                    realName  => $realName,
+                    loginName => $loginname,
+                    position  => $position,
+                    email     => $email,
+                    skills    => $skills,
+                };
         }
-        push @{$members->{$position}||=[]} ,
-          {
-           realName  => $realName,
-           loginName => $loginname,
-           position  => $position,
-           email     => $email,
-          };
     }
 
     $self->{members} = $members;

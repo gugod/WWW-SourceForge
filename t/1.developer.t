@@ -9,5 +9,11 @@ my $sfp = WWW::SourceForge::Project->new('chewingosx');
 
 my $members = $sfp->Member;
 
+use YAML;
+print YAML::Dump($members);
+for(values %$members) {
+    print "$_->{loginName}\n" for(@$_) ;
+}
+
 ok( $members->{'No specific role'}[0]{loginName} eq 'clkao');
 ok( $members->{'Project Manager'}[0]{loginName} eq 'gugod');
