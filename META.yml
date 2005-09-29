@@ -1,12 +1,13 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         WWW-SourceForge
-version:      0.083
+version:      0.084
 version_from: 
 installdirs:  site
 requires:
     HTML::TableExtract:            0
     WWW::Mechanize:                0
+    YAML:                          0
 
 distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.17
+generated_by: ExtUtils::MakeMaker version 6.30
