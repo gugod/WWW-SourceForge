@@ -2,6 +2,7 @@
 package WWW::SourceForge::Project;
 
 use Cwd;
+use Carp;
 use WWW::Mechanize;
 use HTML::TableExtract;
 
@@ -54,15 +55,20 @@ sub new {
     }
 
     # Project description
-    my ($foo,$meta) = $content =~ m{<HR SIZE="1" NoShade><BR>
-<TABLE WIDTH="100%" BORDER="0">
-<TR><TD WIDTH="99%" VALIGN="top">
-<p>(.+?)<p>(?:.+?)<UL>(.+?)</UL>}s;
-    $foo =~ s/^\s+//s;
-    $foo =~ s/\s+$//s;
-    $proj = {unixname => $pname, description => $foo};
+    my ($desc,$meta) = $content =~ m{<HR SIZE="1" NoShade><BR>
+[\s\n]*<TABLE WIDTH="100%" BORDER="0">
+[\s\n]*<TR><TD WIDTH="99%" VALIGN="top">
+[\s\n]*<p>(.+?)<UL>(.+?)</UL>}s;
+
+    die "Could not recognize project page format - has SF changed its layout?\n"
+        unless $desc;
+
+    $desc =~ s/^\s+//s;
+    $desc =~ s/\s+$//s;
+    $proj = {unixname => $pname, description => $desc};
 
     @$proj{name} = $content =~ m{<TITLE>SourceForge.net: Project Info - (.+)</TITLE>};
+
     foreach (split(/<LI> /,$meta)) {
         s/\s*<BR>//;
         my ($k,$v) = split /: /;
@@ -94,6 +100,10 @@ sub new {
     # Find important links
     my %links;
     $links{home} = $wa->uri;
+    my $wa_list = $wa->find_link(url_regex => qr|/mail/\?|);
+    if ($wa_list) {
+        $links{lists} = "http://sourceforge.net". ($wa_list)->url;
+    }
     $links{developers} = ($wa->find_link(url_regex => qr/memberlist\.php/))->url;
     $proj->{links} = \%links;
     $proj->{_wa}   = $wa;
@@ -174,7 +184,49 @@ sub TaskManager {}
 
 sub Latestnews {}
 
-# yawp!
+=head2 MailingLists
+
+Returns a hashref of hashes containing information about the project's
+mailing lists.  Each mailing list is a separate entry in the hash, keyed
+by its list name.  The individual mailing list hashes have the following
+data members:
+
+    posts     - Total number of posts made to the list
+    members   - Current number of mailing list subscribers
+
+Returns undef in the case of an error.
+
+=cut
+sub MailingLists {
+    my $self = shift;
+
+    my $wa = WWW::Mechanize->new;
+    my $lists = $self->{lists};
+    $lists = $self->{lists} = {} if ($param->{refresh});
+    return $lists if(keys %$lists);
+
+    return undef if (! $self->{links}->{lists});
+
+    $wa->get($self->{links}->{lists});
+    sleep(1);
+    $wa->follow_link(url=>$self->{links}->{lists});
+    my $content = $wa->content;
+
+    foreach my $line (split /\/mailarchive\/forum\.php\?forum_id/, $content) {
+        next unless $line =~ m|([\w-]+)\s*Archives</a>\s*(\d+)\s*messages|i;
+        my ($listname, $posts, $members) = ($1, $2, 0);
+        $line =~ m|Approximate subscriber count\:\s*(\d+)|;
+        $members = $1;
+
+        # Convert e.g 42,123 -> 42123
+        $posts =~ s/\,//g;
+        $members =~ s/\,//g;
+
+        $self->{lists}->{ $listname }->{ 'posts' } = $posts;
+        $self->{lists}->{ $listname }->{ 'members' } = $members;
+    }
+    return $self->{lists};
+}
 
 sub MakeDonation {}
 
@@ -197,7 +249,8 @@ sub FetchCVSRepository {
 # privates
 
 sub _projurl {
-    return "http://sourceforge.net/projects/" . $_[0];
+    my $prjname = shift || carp "No project name given!\n";
+    return "http://sourceforge.net/projects/" . $prjname;
 }
 
 

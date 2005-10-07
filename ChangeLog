@@ -1,3 +1,7 @@
+2005-10-7   Liu Kang-min  <gugod@gugod.org
+	* 0.09: Add --list-mailinglists command to sfnet
+	        Patch submitted by bryce@bryceharrington.org.
+
 2004-10-29  Liu Kang-min  <gugod@gugod.org>
 	* 0.082: sleep(1) between consecutive GET
 

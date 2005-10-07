@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl -l -w
+#!/usr/bin/perl -l -w
 
 =head2 SYNOPSIS
 
@@ -72,3 +72,28 @@ sub list_member {
     }
 }
 
+=head2 list_mailinglists - retrieve info about the project's mailing lists
+
+Given a SF.net project unixname, this option prints a listing of that
+project's mailing lists.  For example:
+
+  sfnet --list-mailinglists inkscape
+
+=cut
+
+sub list_mailinglists {
+    my $prjname = shift or die "No project name specified\n";
+
+    my $sfp = WWW::SourceForge::Project->new($prjname)
+        or die "Could not create WWW::SourceForge::Project instance\n";
+
+    my $lists = $sfp->MailingLists
+        or die "Could not retrieve mailing lists\n";
+
+    printf("%-24s  %8s %8s\n", "List", "Members", "Posts");
+    foreach my $list (sort keys %$lists) {
+        my $members = $lists->{$list}->{members} || '';
+        my $posts = $lists->{$list}->{posts} || '';
+        printf "%-24s  %8s %8s\n", $list, $members, $posts;
+    }
+}
