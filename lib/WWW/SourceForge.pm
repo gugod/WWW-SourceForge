@@ -3,7 +3,7 @@ package WWW::SourceForge;
 
 use vars qw/$VERSION/;
 use WWW::Mechanize;
-$VERSION = '0.06';
+$VERSION = '0.10';
 
 =head1 NAME
 

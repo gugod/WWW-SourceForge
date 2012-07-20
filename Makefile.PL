@@ -5,7 +5,7 @@ WriteMakefile(
     AUTHOR              => 'Kang-min Liu (gugod@gugod.org)',
     ABSTRACT            => 'Retrieve infromation from SourceForge site',
     NAME                => 'WWW::SourceForge',
-    VERSION             => '0.09',
+    VERSION             => '0.10',
     DISTNAME            => 'WWW-SourceForge',
     PREREQ_PM           => {
         'WWW::Mechanize'     => '0',
