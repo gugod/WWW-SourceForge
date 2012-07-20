@@ -1,4 +1,7 @@
-2005-10-7   Liu Kang-min  <gugod@gugod.org
+2012-07-20   Liu Kang-min  <gugod@gugod.org>
+	* 0.10: mv broken tests away to xt. No functional changes.
+
+2005-10-7   Liu Kang-min  <gugod@gugod.org>
 	* 0.09: Add --list-mailinglists command to sfnet
 	        Patch submitted by bryce@bryceharrington.org.
 
@@ -17,5 +20,5 @@
 	* 0.03: Be able to fetch user information.
 	* 0.02: Be able to fetch active list project names.
 	* 0.01: Be able to fetch basic project information.
-	
+
 
